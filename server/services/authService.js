@@ -1,17 +1,13 @@
+require('dotenv').config(); 
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'oncar_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const AuthService = {
   register: async (userData) => {
-    const userExists = await UserModel.findByEmail(userData.email);
-    if (userExists) throw new Error('User already exists');
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(userData.password, salt);
-
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
     return await UserModel.create({ ...userData, password: hashedPassword });
   },
 
@@ -23,7 +19,16 @@ const AuthService = {
     if (!isMatch) throw new Error('Invalid credentials');
 
     const token = jwt.sign({ id: user.id_user }, JWT_SECRET, { expiresIn: '1d' });
-    return { token, user: { id: user.id_user, name: user.name, email: user.email } };
+    
+    delete user.password;
+    return { token, user };
+  },
+
+  getUserById: async (id) => {
+    const user = await UserModel.findById(id); 
+    if (!user) throw new Error('User not found');
+    delete user.password;
+    return user;
   }
 };
 

@@ -2,3 +2,9 @@ node_modules/
 .env
 server/node_modules/
 client/node_modules/
+create_containers.sh
+start_containers.sh
+stop_containers.sh
+db_modeling.excalidraw
+/nginx
+cookies.txt
