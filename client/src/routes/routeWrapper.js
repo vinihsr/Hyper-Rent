@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/authContext';
+import { ComplianceGuard } from  '../components/complianceGuard'
 
 export default function RouteWrapper({ children, isPrivate = false, adminOnly = false }) {
   const { signed, loading, isAdmin } = useContext(AuthContext);
@@ -15,8 +16,13 @@ export default function RouteWrapper({ children, isPrivate = false, adminOnly = 
     return <Navigate to="/fleet" replace />;
   }
 
-if (!isPrivate && signed) {
-  return <Navigate to={isAdmin ? "/admin" : "/fleet"} replace />;
-}
+  if (!isPrivate && signed) {
+    return <Navigate to={isAdmin ? "/admin" : "/fleet"} replace />;
+  }
+
+  if (isPrivate) {
+    return <ComplianceGuard>{children}</ComplianceGuard>;
+  }
+
   return children;
 }

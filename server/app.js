@@ -7,6 +7,7 @@ const carRoutes = require('./routes/carRoutes');
 const rentRoutes = require('./routes/rentRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
+const termsRoutes = require('./routes/termsRoutes'); 
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use('/api/rent', rentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/api-keys', adminRoutes)
 app.use('/api/external', adminRoutes);
+app.use('/api/terms', termsRoutes);
+
 
 app.use(errorMiddleware);
 
