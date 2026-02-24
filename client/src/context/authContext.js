@@ -13,6 +13,11 @@ export function AuthProvider({ children }) {
 
   const isAdmin = user?.email === process.env.REACT_APP_ADMIN_EMAIL;
 
+  const signup = async (formData) => {
+    const response = await api.post('/auth/signup', formData);
+    return response.data;
+  };
+
   const login = async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
     const userData = response.data.user;
@@ -23,23 +28,29 @@ export function AuthProvider({ children }) {
     return response.data; 
   };
 
-const logout = async () => {
-  try {
-    await api.post('/auth/logout'); 
-  } catch (err) {
-    console.error("Logout error", err);
-  } finally {
-    setUser(null);
-    sessionStorage.removeItem('@Rentit:user');
-    
-    localStorage.clear(); 
-    
-    window.location.href = '/login'; 
-  }
-};
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout'); 
+    } catch (err) {
+      console.error("Logout error", err);
+    } finally {
+      setUser(null);
+      sessionStorage.removeItem('@Rentit:user');
+      localStorage.clear(); 
+      window.location.href = '/login'; 
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ signed: !!user, user, isAdmin, loading, login, logout }}>
+    <AuthContext.Provider value={{ 
+      signed: !!user, 
+      user, 
+      isAdmin, 
+      loading, 
+      login, 
+      signup, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
